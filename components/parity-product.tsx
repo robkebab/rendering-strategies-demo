@@ -1,54 +1,34 @@
-import type { GetServerSideProps } from 'next'
+'use client'
+
 import type { Country, Product } from '../types'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Layout } from '@vercel/examples-ui'
 
-import api from '../api'
 import { getDiscountedPrice } from '../utils'
 import { REGIONS, STORE_URL } from '../constants'
 
 interface Props {
-  country: Country
   product: Product
+  country: Country
+  strategy: 'edge' | 'ssr'
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  // Get country
-  const country = String(
-    req.headers['x-vercel-ip-country'] || 'us'
-  ).toLowerCase() as Country
-
-  // Get product for country
-  const product = await api.product.fetch({ country })
-
-  return {
-    props: {
-      country,
-      product,
-    },
-  }
-}
-
-function SSRProductPage({ country, product }: Props) {
+export default function ParityProduct({ country, product, strategy }: Props) {
   const [isParityEnabled, toggleParity] = useState<boolean>(true)
-  const parityPrice = useMemo(
-    () => getDiscountedPrice(product.price, product.discount),
-    [product.discount, product.price]
-  )
+  const parityPrice = getDiscountedPrice(product.price, product.discount)
 
   return (
     <>
       <div className="ml-14 lg:ml-24 -mb-40 lg:-mb-56">
         <Image
-          className="pointer-events-none"
+          className="pointer-events-none w-full h-auto"
           alt={product.name}
           src={product.image}
-          width="440"
-          height="440"
-          layout="responsive"
+          loading="eager"
+          width={440}
+          height={440}
         />
       </div>
       <section className="border border-gray-300 bg-white rounded-lg shadow-lg mt-16 w-full hover:shadow-2xl transition pt-16 lg:pt-24">
@@ -74,17 +54,27 @@ function SSRProductPage({ country, product }: Props) {
           <div className="bg-gray-50 text-gray-500 text-left py-2 px-4 rounded-md border-gray-200 border text-sm flex flex-col gap-4">
             <div className="inline-block">
               <span>
-                Using server-side rendering, we dynamically rendered this
-                discount for you, based on your location{' '}
+                Using {strategy === 'edge' ? 'Edge Middleware' : 'server-side rendering'},
+                we dynamically rendered this discount for you, based on your location{' '}
               </span>
               <Image
                 className="bg-gray-200 inline-flex"
                 width={16}
                 height={12}
                 src={`/flags/${country.toLowerCase()}.svg`}
-                alt={`Country flag for ${country.toUpperCase()}`}
+                alt={`The flag of ${country.toLowerCase()}`}
               />
-              <span>{'.'}</span>
+              {strategy === 'edge' ? (
+                <>
+                  <span>. Learn more at </span>
+                  <a className="text-blue-500" href="https://vercel.com/edge">
+                    vercel.com/edge
+                  </a>
+                  {'.'}
+                </>
+              ) : (
+                <span>.</span>
+              )}
             </div>
             <label className="inline-flex items-center font-semibold">
               <input
@@ -104,20 +94,22 @@ function SSRProductPage({ country, product }: Props) {
             }
             target="_blank"
             rel="noreferrer"
-            className="py-4 px-6 text-lg w-full bg-black text-center text-white hover:text-white rounded-md hover:bg-gray-900"
+            className="py-4 px-6 text-lg w-full bg-green-600 text-center text-white hover:text-white rounded-md hover:bg-green-700"
           >
             Buy now
           </a>
         </div>
       </section>
       <p className="text-gray-500 mt-3 text-sm text-center">
-        This is an SSR version, compare with the{' '}
+        This is an {strategy === 'edge' ? 'Edge' : 'SSR'} version, compare with the{' '}
         <span className="underline">
           <Link href="/static">static</Link>
         </span>{' '}
         or{' '}
         <span className="underline">
-          <Link href="/edge">Edge</Link>
+          <Link href={strategy === 'edge' ? '/ssr' : '/edge'}>
+            {strategy === 'edge' ? 'SSR' : 'Edge'}
+          </Link>
         </span>{' '}
         version.
       </p>
@@ -125,6 +117,3 @@ function SSRProductPage({ country, product }: Props) {
   )
 }
 
-SSRProductPage.Layout = Layout
-
-export default SSRProductPage

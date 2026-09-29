@@ -1,38 +1,23 @@
-import type { GetStaticProps } from 'next'
-
 import Image from 'next/image'
 import Link from 'next/link'
-import { Layout } from '@vercel/examples-ui'
 
-import api from '../api'
-import { Product } from '../types'
+import api from '../../api'
 
-interface Props {
-  product: Product
-}
+// Keep this comparison page prerendered, unlike the request-specific SSR page.
+export const dynamic = 'force-static'
 
-export const getStaticProps: GetStaticProps<unknown, never> = async () => {
-  // Get product
+export default async function StaticProductPage() {
   const product = await api.product.fetch()
-
-  return {
-    props: {
-      product,
-    },
-  }
-}
-
-function StaticProductPage({ product }: Props) {
   return (
     <>
       <div className="ml-14 lg:ml-24 -mb-40 lg:-mb-56">
         <Image
-          className="pointer-events-none"
           alt={product.name}
           src={product.image}
-          width="440"
-          height="440"
-          layout="responsive"
+          loading="eager"
+          width={440}
+          height={440}
+          className="pointer-events-none w-full h-auto"
         />
       </div>
       <section className="border border-gray-300 bg-white rounded-lg shadow-lg mt-16 w-full hover:shadow-2xl transition pt-16 lg:pt-24">
@@ -49,7 +34,7 @@ function StaticProductPage({ product }: Props) {
           <Link
             href="/edge"
             role="button"
-            className="py-4 px-6 text-lg w-full bg-black text-center text-white hover:text-white rounded-md hover:bg-gray-900"
+            className="py-4 px-6 text-lg w-full bg-green-600 text-center text-white hover:text-white rounded-md hover:bg-green-700"
           >
             Get Discount via Edge
           </Link>
@@ -70,6 +55,3 @@ function StaticProductPage({ product }: Props) {
   )
 }
 
-StaticProductPage.Layout = Layout
-
-export default StaticProductPage

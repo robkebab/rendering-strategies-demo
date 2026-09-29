@@ -1,12 +1,12 @@
 import { geolocation } from '@vercel/functions'
 import { type NextRequest, NextResponse } from 'next/server'
 
-// Set pathname were middleware will be executed
+// Rewrite the public /edge route based on request geolocation.
 export const config = {
   matcher: '/edge',
 }
 
-export default function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   // Get country
   const country = geolocation(req).country?.toLowerCase() || 'us'
 
