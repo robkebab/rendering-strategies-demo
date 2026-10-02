@@ -34,7 +34,7 @@ export default async function StaticProductPage() {
           <Link
             href="/edge"
             role="button"
-            className="py-4 px-6 text-lg w-full bg-green-600 text-center text-white hover:text-white rounded-md hover:bg-green-700"
+            className="py-4 px-6 text-lg w-full bg-blue-600 text-center text-white hover:text-white rounded-md hover:bg-blue-700"
           >
             Get Discount via Edge
           </Link>
@@ -54,4 +54,3 @@ export default async function StaticProductPage() {
     </>
   )
 }
-
