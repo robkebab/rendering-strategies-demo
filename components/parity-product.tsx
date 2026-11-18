@@ -94,7 +94,7 @@ export default function ParityProduct({ country, product, strategy }: Props) {
             }
             target="_blank"
             rel="noreferrer"
-            className="py-4 px-6 text-lg w-full bg-pink-600 text-center text-white hover:text-white rounded-md hover:bg-pink-700"
+            className="py-4 px-6 text-lg w-full bg-red-600 text-center text-white hover:text-white rounded-md hover:bg-red-700"
           >
             Buy now
           </a>
