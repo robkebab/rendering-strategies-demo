@@ -18,11 +18,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <ExampleShell>
-          <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-50">
-            <div className="fixed inset-0 overflow-hidden opacity-75 bg-[#f8fafb]">
+          <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-[#090b0e]">
+            <div className="fixed inset-0 overflow-hidden opacity-10 bg-[#090b0e]">
               <Image alt="World Map" src={map} fill className="object-cover" />
             </div>
-            <main className="flex flex-col items-center flex-1 px-4 sm:px-20 w-full text-center z-10 py-8 sm:py-20">
+            <main className="flex flex-col items-center flex-1 px-4 sm:px-20 w-full text-center z-10 py-8 sm:py-20 text-white">
               <Text variant="h1" className="mb-4">Edge Middleware</Text>
               <Text>Dynamic content close to your users.</Text>
               <a
